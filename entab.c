@@ -1,42 +1,89 @@
 #include<stdio.h>
 
-#define TABINC 4
+
+#define TAB 4 //number of spaces to make a tab
 
 int main(void)
 {
-    int nb,nt,pos,c;
-    
-    nb = 0;
-    nt = 0;
-    
-    for(pos=1;(c=getchar())!=EOF;++pos)
-        if( c == ' ')
+    int numberOfSpaces,c,pos,reachedLetter,numberOfTabs;
+    numberOfSpaces = 0;
+    reachedLetter = 0;
+    pos=0;
+    numberOfTabs=0;
+
+
+
+    while((c=getchar())!=EOF) {
+        ++pos;
+        if (c == ' '&&!reachedLetter)
         {
-            if((pos % TABINC) != 0)
-                ++nb;
+            if((pos%TAB)!=0)
+            {
+                numberOfSpaces++;
+                //putchar(numberOfSpaces);
+            }
             else
             {
-                nb = 0;
-                ++nt;
+                //putchar(numberOfSpaces);
+                numberOfSpaces=0;
+                numberOfTabs++;
             }
+
+            continue;
         }
-        else 
+        else if(c=='\t' && !reachedLetter)
         {
-            for( ; nt > 0 ; --nt)
+            numberOfTabs++;
+            numberOfSpaces=0;
+            pos = pos + (TAB - (pos%TAB));
+            continue;
+        }
+        else
+        {
+
+            while(numberOfTabs>0&&!reachedLetter)
+            {
                 putchar('\t');
-            if( c == '\t')
-                nb = 0;
-            else
-                for( ; nb > 0; --nb)
-                    putchar(' ');
-            
+                --numberOfTabs;
+            }
+
+            if(numberOfSpaces%TAB!=0&&!reachedLetter) {
+                putchar('\t');
+                numberOfSpaces = 0;
+            }
+            reachedLetter=1;
             putchar(c);
-            
-            if(c == '\n')
-                pos = 0;
-            else if ( c == '\t')
-                pos = pos + ( TABINC - (pos -1) % TABINC) - 1;
+           // pos++;
+            if(c=='\n')
+            {
+                reachedLetter=0;
+                pos=0;
+            }
+
         }
 
+
+
+
+
+
+        /*else //reached non-white so just keep spitting
+        {
+            reachedLetter = 1;
+            putchar(c);
+            if(c=='\n')
+            {
+                numberOfSpaces=0;
+                pos=0;
+                reachedLetter=0;
+                //prep=0;
+                //putchar(numberOfSpaces);
+            }
+            else if( c=='\t')
+            {
+                pos = pos + (TAB - (pos-1)%TAB)-1;
+            }
+*/
+        }
     return 0;
 }
